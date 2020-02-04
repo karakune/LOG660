@@ -436,8 +436,7 @@ public class LectureBD {
       }
 
       try {
-         // TODO: insert the real connection info
-         conn = DriverManager.getConnection("jdbc:oracle:oci8:@", "toto", "secret");
+         conn = DriverManager.getConnection("jdbc:oracle:oci8:@log660ora12c.logti.etsmtl.ca:1521:LOG660", "EQUIPE101", "xquevykK");
          conn.setAutoCommit(false);
       } catch (SQLException ex) {
          System.out.println("Error getting connection: " + ex.getMessage());
