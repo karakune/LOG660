@@ -436,6 +436,7 @@ public class LectureBD {
       }
 
       try {
+         // TODO: insert the real connection info
          conn = DriverManager.getConnection("jdbc:oracle:oci8:@", "toto", "secret");
          conn.setAutoCommit(false);
       } catch (SQLException ex) {
@@ -445,8 +446,8 @@ public class LectureBD {
       try {
          // TODO: Inside sqldeveloper, create the procedures
          stInsertPersonne = conn.prepareStatement("EXECUTE p_ajouterPersonne(id => ?, nom => ? => ?, anniv => ?, lieu => ?, photo => ?, bio => ?);");
-         // TODO: create the SQL queries
-         stInsertFilm = conn.prepareStatement("EXECUTE p_ajouterFilm()");
+         stInsertFilm = conn.prepareStatement("EXECUTE p_ajouterFilm(id => ?, titre => ?, annee => ?, pays => ?, langue => ?, duree => ?, " +
+                 "resume => ?, genres => ?, realisateurNom => ?, realisateurId => ?, scenaristes => ?, roles => ?, poster => ?, annonces => ?);");
          stInsertClient = conn.prepareStatement(
                  "EXECUTE p_ajouterClient(id => ?, nomFamille => ?, prenom => ?, courriel => ?, tel => ?, anniv => ?, " +
                  "adresse => ?, ville => ?, province => ?, codePostal => ?, carte => ?, noCarte => ?, expMois => ?, expAnnee => ?, " +
