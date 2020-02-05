@@ -9,9 +9,9 @@ CREATE TABLE Client (
     nomFam VARCHAR2(50) NOT NULL,
     courriel VARCHAR2(50) UNIQUE NOT NULL,
     noTel VARCHAR2(50) NOT NULL,
-    dateNaiss DATE NOT NULL 
-        CHECK ((EXTRACT(YEAR FROM CURRENT_DATE) - EXTRACT(YEAR FROM dateNaiss)) >= 18),
+    dateNaiss DATE NOT NULL, --check year > 18 in trigger   trunc (months_between (:end_date, :start_date) / 12)
     motDePasse VARCHAR2(50) NOT NULL CHECK (LENGTH (motDePasse) > 5),
+    codeForfait VARCHAR2(50) NOT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (codeForfait) REFERENCES Forfait(code)
 );
@@ -26,6 +26,7 @@ CREATE TABLE CarteCredit (
 
 CREATE TABLE Employe (
     matricule VARCHAR2(50) NOT NULL,
+    idClient UNIQUE NOT NULL,
     PRIMARY KEY (matricule),
     FOREIGN KEY (idClient) REFERENCES Client(id)
 );
@@ -41,6 +42,7 @@ CREATE TABLE Forfait (
 
 CREATE TABLE Inventaire (
     noCopie NUMBER NOT NULL,
+    idFilm NUMBER NOT NULL,
     PRIMARY KEY (noCopie),
     FOREIGN KEY (idFilm) REFERENCES Film(id)
 );
@@ -49,6 +51,7 @@ CREATE TABLE Location (
     id NUMBER NOT NULL,
     dateLocation DATE NOT NULL,
     etat VARCHAR2(50) NOT NULL,
+    noCopie NUMBER NOT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (noCopie) REFERENCES Inventaire(noCopie)
 );
@@ -61,11 +64,14 @@ CREATE TABLE Film (
     duree NUMBER NOT NULL,
     resume VARCHAR2(50) NOT NULL,
     affiche VARCHAR2(50) NOT NULL,
-    PRIMARY KEY (name),
+    idRealisateur NUMBER NOT NULL,
+    PRIMARY KEY (id),
     FOREIGN KEY (idRealisateur) REFERENCES Crew(id)
 );
 
 CREATE TABLE FilmPays (
+    film NUMBER NOT NULL,
+    pays VARCHAR2(50) NOT NULL,
     PRIMARY KEY (film, pays),
     FOREIGN KEY (film) REFERENCES Film(id),
     FOREIGN KEY (pays) REFERENCES Pays(nom)
@@ -77,6 +83,8 @@ CREATE TABLE Pays (
 );
 
 CREATE TABLE FilmGenre (
+    film NUMBER NOT NULL,
+    genre VARCHAR2(50) NOT NULL,
     PRIMARY KEY (film, genre),
     FOREIGN KEY (film) REFERENCES Film(id),
     FOREIGN KEY (genre) REFERENCES Genre(nom)
@@ -88,6 +96,8 @@ CREATE TABLE Genre (
 );
 
 CREATE TABLE FilmBA (
+    film NUMBER NOT NULL,
+    BA VARCHAR2(500) NOT NULL,
     PRIMARY KEY (film, BA),
     FOREIGN KEY (film) REFERENCES Film(id),
     FOREIGN KEY (BA) REFERENCES BandeAnnonce(lien)
@@ -110,12 +120,16 @@ CREATE TABLE Crew (
 );
 
 CREATE TABLE Scenariste (
+    film NUMBER NOT NULL, 
+    crew NUMBER NOT NULL,
     PRIMARY KEY (crew, film),
     FOREIGN KEY (film) REFERENCES Film(id),
     FOREIGN KEY (crew) REFERENCES Crew(id)
 );
 
 CREATE TABLE Role (
+    film NUMBER NOT NULL,
+    crew NUMBER NOT NULL,
     personnage VARCHAR2(50) NOT NULL,
     PRIMARY KEY (crew, film),
     FOREIGN KEY (film) REFERENCES Film(id),
