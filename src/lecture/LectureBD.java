@@ -442,19 +442,19 @@ public class LectureBD {
          System.out.println("Error getting connection: " + ex.getMessage());
       }
 
-      try {
-         // TODO: Inside sqldeveloper, create the procedures
-         stInsertPersonne = conn.prepareStatement("EXECUTE p_ajouterPersonne(id => ?, nom => ? => ?, anniv => ?, lieu => ?, photo => ?, bio => ?);");
-         stInsertFilm = conn.prepareStatement("EXECUTE p_ajouterFilm(id => ?, titre => ?, annee => ?, pays => ?, langue => ?, duree => ?, " +
-                 "resume => ?, genres => ?, realisateurNom => ?, realisateurId => ?, scenaristes => ?, roles => ?, poster => ?, annonces => ?);");
-         stInsertClient = conn.prepareStatement(
-                 "EXECUTE p_ajouterClient(id => ?, nomFamille => ?, prenom => ?, courriel => ?, tel => ?, anniv => ?, " +
-                 "adresse => ?, ville => ?, province => ?, codePostal => ?, carte => ?, noCarte => ?, expMois => ?, expAnnee => ?, " +
-                         "motDePasse => ?, forfait => ?);"
-         );
-      } catch (SQLException ex) {
-         System.out.println("Error inserting values: " + ex.getMessage());
-      }
+//      try {
+//         // TODO: Inside sqldeveloper, create the procedures
+//         stInsertPersonne = conn.prepareStatement("EXECUTE p_ajouterPersonne(id => ?, nom => ? => ?, anniv => ?, lieu => ?, photo => ?, bio => ?);");
+//         stInsertFilm = conn.prepareStatement("EXECUTE p_ajouterFilm(id => ?, titre => ?, annee => ?, pays => ?, langue => ?, duree => ?, " +
+//                 "resume => ?, genres => ?, realisateurNom => ?, realisateurId => ?, scenaristes => ?, roles => ?, poster => ?, annonces => ?);");
+//         stInsertClient = conn.prepareStatement(
+//                 "EXECUTE p_ajouterClient(id => ?, nomFamille => ?, prenom => ?, courriel => ?, tel => ?, anniv => ?, " +
+//                 "adresse => ?, ville => ?, province => ?, codePostal => ?, carte => ?, noCarte => ?, expMois => ?, expAnnee => ?, " +
+//                         "motDePasse => ?, forfait => ?);"
+//         );
+//      } catch (SQLException ex) {
+//         System.out.println("Error inserting values: " + ex.getMessage());
+//      }
 
    }
 
@@ -465,15 +465,15 @@ public class LectureBD {
       lecture.lectureFilms(args[1]);
       lecture.lectureClients(args[2]);
 
-      try {
-         lecture.stInsertPersonne.executeBatch();
-         lecture.stInsertFilm.executeBatch();
-         lecture.stInsertClient.executeBatch();
-
-         lecture.conn.commit();
-         lecture.conn.close();
-      } catch (SQLException ex) {
-         System.out.println("Error executing batch command " + ex.getMessage());
-      }
+//      try {
+//         lecture.stInsertPersonne.executeBatch();
+//         lecture.stInsertFilm.executeBatch();
+//         lecture.stInsertClient.executeBatch();
+//
+//         lecture.conn.commit();
+//         lecture.conn.close();
+//      } catch (SQLException ex) {
+//         System.out.println("Error executing batch command " + ex.getMessage());
+//      }
    }
 }

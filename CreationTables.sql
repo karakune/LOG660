@@ -9,12 +9,15 @@ CREATE TABLE Client (
     nomFam VARCHAR2(50) NOT NULL,
     courriel VARCHAR2(50) UNIQUE NOT NULL,
     noTel VARCHAR2(50) NOT NULL,
-    dateNaiss DATE NOT NULL, --check year > 18 in trigger   trunc (months_between (:end_date, :start_date) / 12)
+    dateNaiss DATE NOT NULL,
     motDePasse VARCHAR2(50) NOT NULL CHECK (LENGTH (motDePasse) > 5),
     codeForfait VARCHAR2(50) NOT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (codeForfait) REFERENCES Forfait(code)
 );
+
+--ALTER TABLE Client
+--MODIFY codeForfait NOT NULL;
 
 CREATE TABLE CarteCredit (
     typeCarte VARCHAR(20) NOT NULL CHECK (typeCarte IN ('VISA', 'MasterCard', 'Amex')),
