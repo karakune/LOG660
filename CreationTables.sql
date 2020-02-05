@@ -23,7 +23,6 @@ CREATE TABLE CarteCredit (
     typeCarte VARCHAR(20) NOT NULL CHECK (typeCarte IN ('VISA', 'MasterCard', 'Amex')),
     numero VARCHAR2(16) NOT NULL,
     dateExp DATE NOT NULL,
-    cvv VARCHAR2(3) NOT NULL,
     PRIMARY KEY (numero)
 );
 

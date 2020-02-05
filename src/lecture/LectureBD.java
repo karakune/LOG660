@@ -465,15 +465,15 @@ public class LectureBD {
       lecture.lectureFilms(args[1]);
       lecture.lectureClients(args[2]);
 
-//      try {
-//         lecture.stInsertPersonne.executeBatch();
-//         lecture.stInsertFilm.executeBatch();
-//         lecture.stInsertClient.executeBatch();
-//
-//         lecture.conn.commit();
-//         lecture.conn.close();
-//      } catch (SQLException ex) {
-//         System.out.println("Error executing batch command " + ex.getMessage());
-//      }
+      try {
+         lecture.stInsertPersonne.executeBatch();
+         lecture.stInsertFilm.executeBatch();
+         lecture.stInsertClient.executeBatch();
+
+         lecture.conn.commit();
+         lecture.conn.close();
+      } catch (SQLException ex) {
+         System.out.println("Error executing batch command " + ex.getMessage());
+      }
    }
 }
