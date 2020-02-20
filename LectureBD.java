@@ -13,6 +13,8 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
+import oracle.jdbc.OracleConnection;
+
 
 public class LectureBD {
    public class Role {
@@ -26,7 +28,7 @@ public class LectureBD {
       protected String personnage;
    }
 
-   Connection conn;
+   OracleConnection conn;
    PreparedStatement stInsertPersonne;
    PreparedStatement stInsertFilm;
    PreparedStatement stInsertClient;
@@ -105,6 +107,7 @@ public class LectureBD {
        }
        catch (IOException e) {
          System.out.println("IOException while parsing " + nomFichier);
+         System.out.println(e);
        }
    }
 
@@ -355,7 +358,7 @@ public class LectureBD {
       try {
          stInsertPersonne.setInt(1, id);
          stInsertPersonne.setString(2, nom);
-         stInsertPersonne.setDate(3, Date.valueOf(anniv));
+         stInsertPersonne.setDate(3, (anniv != null ? Date.valueOf(anniv) : null));
          stInsertPersonne.setString(4, lieu);
          stInsertPersonne.setString(5, photo);
          stInsertPersonne.setString(6, bio);
@@ -377,17 +380,17 @@ public class LectureBD {
          stInsertFilm.setInt(1, id);
          stInsertFilm.setString(2, titre);
          stInsertFilm.setInt(3, annee);
-         stInsertFilm.setArray(4, conn.createArrayOf("VARCHAR(50)", pays.toArray()));
+         stInsertFilm.setArray(4, conn.createARRAY("ARRAYPAYS", pays.toArray()));
          stInsertFilm.setString(5, langue);
          stInsertFilm.setInt(6, duree);
          stInsertFilm.setString(7, resume);
-         stInsertFilm.setArray(8, conn.createArrayOf("VARCHAR(50)", genres.toArray()));
+         stInsertFilm.setArray(8, conn.createARRAY("ARRAYGENRES", genres.toArray()));
          stInsertFilm.setString(9, realisateurNom);
          stInsertFilm.setInt(10, realisateurId);
-         stInsertFilm.setArray(11, conn.createArrayOf("VARCHAR(50)", scenaristes.toArray()));
-         stInsertFilm.setArray(12, conn.createArrayOf("type_role", roles.toArray()));
+         stInsertFilm.setArray(11, conn.createARRAY("ARRAYSCENARISTES", scenaristes.toArray()));
+         stInsertFilm.setArray(12, conn.createARRAY("ARRAYROLES", roles.toArray()));
          stInsertFilm.setString(13, poster);
-         stInsertFilm.setArray(14, conn.createArrayOf("VARCHAR(50)", annonces.toArray()));
+         stInsertFilm.setArray(14, conn.createARRAY("ARRAYANNONCES", annonces.toArray()));
 
          stInsertFilm.addBatch();
       } catch (SQLException ex) {
@@ -436,25 +439,25 @@ public class LectureBD {
       }
 
       try {
-         conn = DriverManager.getConnection("jdbc:oracle:thin:@log660ora12c.logti.etsmtl.ca:1521:LOG660", "EQUIPE101", "xquevykK");
+         conn = DriverManager.getConnection("jdbc:oracle:thin:@log660ora12c.logti.etsmtl.ca:1521:LOG660", "EQUIPE101", "xquevykK").unwrap(OracleConnection.class);
          conn.setAutoCommit(false);
       } catch (SQLException ex) {
          System.out.println("Error getting connection: " + ex.getMessage());
       }
 
-//      try {
-//         // TODO: Inside sqldeveloper, create the procedures
-//         stInsertPersonne = conn.prepareStatement("EXECUTE p_ajouterPersonne(id => ?, nom => ? => ?, anniv => ?, lieu => ?, photo => ?, bio => ?);");
-//         stInsertFilm = conn.prepareStatement("EXECUTE p_ajouterFilm(id => ?, titre => ?, annee => ?, pays => ?, langue => ?, duree => ?, " +
-//                 "resume => ?, genres => ?, realisateurNom => ?, realisateurId => ?, scenaristes => ?, roles => ?, poster => ?, annonces => ?);");
-//         stInsertClient = conn.prepareStatement(
-//                 "EXECUTE p_ajouterClient(id => ?, nomFamille => ?, prenom => ?, courriel => ?, tel => ?, anniv => ?, " +
-//                 "adresse => ?, ville => ?, province => ?, codePostal => ?, carte => ?, noCarte => ?, expMois => ?, expAnnee => ?, " +
-//                         "motDePasse => ?, forfait => ?);"
-//         );
-//      } catch (SQLException ex) {
-//         System.out.println("Error inserting values: " + ex.getMessage());
-//      }
+     try {
+        // TODO: Inside sqldeveloper, create the procedures
+        stInsertPersonne = conn.prepareStatement("EXECUTE p_ajouterPersonne(id => ?, nom => ?, anniv => ?, lieu => ?, photo => ?, bio => ?);");
+        stInsertFilm = conn.prepareStatement("EXECUTE p_ajouterFilm(id => ?, titre => ?, annee => ?, pays => ?, langue => ?, duree => ?, " +
+                "resume => ?, genres => ?, realisateurNom => ?, realisateurId => ?, scenaristes => ?, roles => ?, poster => ?, annonces => ?);");
+        stInsertClient = conn.prepareStatement(
+                "EXECUTE p_ajouterClient(id => ?, nomFamille => ?, prenom => ?, courriel => ?, tel => ?, anniv => ?, " +
+                "adresse => ?, ville => ?, province => ?, codePostal => ?, carte => ?, noCarte => ?, expMois => ?, expAnnee => ?, " +
+                        "motDePasse => ?, forfait => ?);"
+        );
+     } catch (SQLException ex) {
+        System.out.println("Error inserting values: " + ex.getMessage());
+     }
 
    }
 
@@ -465,15 +468,17 @@ public class LectureBD {
       lecture.lectureFilms(args[1]);
       lecture.lectureClients(args[2]);
 
-      try {
-         lecture.stInsertPersonne.executeBatch();
-         lecture.stInsertFilm.executeBatch();
-         lecture.stInsertClient.executeBatch();
+      System.out.println("successfully read files!");
 
-         lecture.conn.commit();
-         lecture.conn.close();
-      } catch (SQLException ex) {
-         System.out.println("Error executing batch command " + ex.getMessage());
-      }
+      // try {
+      //    lecture.stInsertPersonne.executeBatch();
+      //    lecture.stInsertFilm.executeBatch();
+      //    lecture.stInsertClient.executeBatch();
+
+      //    lecture.conn.commit();
+      //    lecture.conn.close();
+      // } catch (SQLException ex) {
+      //    System.out.println("Error executing batch command " + ex.getMessage());
+      // }
    }
 }
